@@ -1,9 +1,4 @@
 /*
- * I2C-Generator: 0.2.0
- * Yaml Version: 0.4.0
- * Template Version: 0.7.0-20-gf035cde
- */
-/*
  * Copyright (c) 2021, Sensirion AG
  * All rights reserved.
  *
@@ -46,18 +41,19 @@
  * #define printf(...)
  */
 
-// TODO: DRIVER_GENERATOR Add missing commands and make prints more pretty
-
 int main(void) {
     int16_t error = 0;
 
     sensirion_i2c_hal_init();
 
+    error = svm41_device_reset();
+    if (error) {
+        printf("Error executing svm41_device_reset(): %i\n", error);
+    }
+
     unsigned char serial_number[26];
     uint8_t serial_number_size = 26;
-
     error = svm41_get_serial_number(serial_number, serial_number_size);
-
     if (error) {
         printf("Error executing svm41_get_serial_number(): %i\n", error);
     } else {
@@ -71,7 +67,6 @@ int main(void) {
     uint8_t hardware_minor;
     uint8_t protocol_major;
     uint8_t protocol_minor;
-
     error = svm41_get_version(&firmware_major, &firmware_minor, &firmware_debug,
                               &hardware_major, &hardware_minor, &protocol_major,
                               &protocol_minor);
@@ -79,29 +74,47 @@ int main(void) {
     if (error) {
         printf("Error executing svm41_get_version(): %i\n", error);
     } else {
-        printf("Firmware major: %u\n", firmware_major);
-        printf("Firmware minor: %u\n", firmware_minor);
-        printf("Firmware debug: %i\n", firmware_debug);
-        printf("Hardware major: %u\n", hardware_major);
-        printf("Hardware minor: %u\n", hardware_minor);
-        printf("Protocol major: %u\n", protocol_major);
-        printf("Protocol minor: %u\n", protocol_minor);
+        printf("Firmware: %i.%i Debug: %i\n", firmware_major, firmware_minor,
+               firmware_debug);
+        printf("Hardware: %i.%i\n", hardware_major, hardware_minor);
+        printf("Protocol: %i.%i\n", protocol_major, protocol_minor);
+    }
+
+    float t_offset;
+    error = svm41_get_temperature_offset_for_rht_measurements(&t_offset);
+    if (error) {
+        printf("Error executing "
+               "svm41_get_temperature_offset_for_rht_measurements(): %i\n",
+               error);
+    } else {
+        printf("Temperature Offset: %.2f °C\n", t_offset);
     }
 
     // Start Measurement
-
     error = svm41_start_measurement();
-
     if (error) {
         printf("Error executing svm41_start_measurement(): %i\n", error);
     }
 
     for (;;) {
         // Read Measurement
-        // TODO: DRIVER_GENERATOR check and update measurement interval
         sensirion_i2c_hal_sleep_usec(1000000);
-        // TODO: DRIVER_GENERATOR Add scaling and offset to printed measurement
-        // values
+        float humidity;
+        float temperature;
+        float voc_index;
+        float nox_index;
+        error = svm41_read_measured_values(&humidity, &temperature, &voc_index,
+                                           &nox_index);
+        if (error) {
+            printf("Error executing svm41_read_measured_values_as_integers(): "
+                   "%i\n",
+                   error);
+        } else {
+            printf("Humidity: %.2f %% RH\n", humidity);
+            printf("Temperature: %.2f °C\n", temperature);
+            printf("VOC index: %.1f VOC index\n", voc_index);
+            printf("NOx index: %.1f NOx index\n", nox_index);
+        }
     }
 
     error = svm41_stop_measurement();
