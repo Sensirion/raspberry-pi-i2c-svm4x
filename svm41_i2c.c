@@ -98,6 +98,28 @@ int16_t svm41_read_measured_values_as_integers(int16_t* humidity,
     return NO_ERROR;
 }
 
+int16_t svm41_read_measured_values(float* humidity, float* temperature,
+                                   float* voc_index, float* nox_index) {
+    int16_t error;
+    int16_t humidity_ticks;
+    int16_t temperature_ticks;
+    int16_t voc_ticks;
+    int16_t nox_ticks;
+
+    error = svm41_read_measured_values_as_integers(
+        &humidity_ticks, &temperature_ticks, &voc_ticks, &nox_ticks);
+    if (error) {
+        return error;
+    }
+
+    *humidity = humidity_ticks / 100.0f;
+    *temperature = temperature_ticks / 200.0f;
+    *voc_index = voc_ticks / 10.0f;
+    *nox_index = nox_ticks / 10.0f;
+
+    return NO_ERROR;
+}
+
 int16_t svm41_read_measured_raw_values(int16_t* raw_humidity,
                                        int16_t* raw_temperature,
                                        uint16_t* raw_voc_ticks,
@@ -125,7 +147,8 @@ int16_t svm41_read_measured_raw_values(int16_t* raw_humidity,
     return NO_ERROR;
 }
 
-int16_t svm41_set_temperature_offset_for_rht_measurements(int16_t t_offset) {
+int16_t
+svm41_set_temperature_offset_for_rht_measurements_ticks(int16_t t_offset) {
     uint8_t buffer[5];
     uint16_t offset = 0;
     offset = sensirion_i2c_add_command_to_buffer(&buffer[0], offset, 0x6014);
@@ -135,7 +158,14 @@ int16_t svm41_set_temperature_offset_for_rht_measurements(int16_t t_offset) {
     return sensirion_i2c_write_data(SVM41_I2C_ADDRESS, &buffer[0], offset);
 }
 
-int16_t svm41_get_temperature_offset_for_rht_measurements(int16_t* t_offset) {
+int16_t svm41_set_temperature_offset_for_rht_measurements(float t_offset) {
+    int16_t t_offset_ticks = (int16_t)(t_offset * 200.0f + 0.5f);
+    return svm41_set_temperature_offset_for_rht_measurements_ticks(
+        t_offset_ticks);
+}
+
+int16_t
+svm41_get_temperature_offset_for_rht_measurements_ticks(int16_t* t_offset) {
     int16_t error;
     uint8_t buffer[3];
     uint16_t offset = 0;
@@ -153,6 +183,21 @@ int16_t svm41_get_temperature_offset_for_rht_measurements(int16_t* t_offset) {
         return error;
     }
     *t_offset = sensirion_common_bytes_to_int16_t(&buffer[0]);
+    return NO_ERROR;
+}
+
+int16_t svm41_get_temperature_offset_for_rht_measurements(float* t_offset) {
+    int16_t error;
+    int16_t t_offset_ticks;
+
+    error = svm41_get_temperature_offset_for_rht_measurements_ticks(
+        &t_offset_ticks);
+    if (error) {
+        return error;
+    }
+
+    *t_offset = (float)t_offset_ticks / 200.0f;
+
     return NO_ERROR;
 }
 

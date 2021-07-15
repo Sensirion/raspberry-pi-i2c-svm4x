@@ -92,6 +92,29 @@ int16_t svm41_read_measured_values_as_integers(int16_t* humidity,
                                                int16_t* nox_index);
 
 /**
+ * svm41_read_measured_values() - Returns the new measurement
+ * results.
+ *
+ * @note This command is only available in measurement mode. The firmware
+ * updates the measurement values every second. Polling data with a faster
+ * sampling rate will return the same values. The first measurement is available
+ * 1 second after the start measurement command is issued. Any readout prior to
+ * this will return zero initialized values.
+ *
+ * @param humidity Compensated ambient humidity in % RH.
+ *
+ * @param temperature Compensated ambient temperature in degrees celsius.
+ *
+ * @param voc_index VOC algorithm output.
+ *
+ * @param nox_index NOx algorithm output.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t svm41_read_measured_values(float* humidity, float* temperature,
+                                   float* voc_index, float* nox_index);
+
+/**
  * svm41_read_measured_raw_values() - Returns the measured raw values.
  *
  * @note This command is only available in measurement mode. The firmware
@@ -118,24 +141,46 @@ int16_t svm41_read_measured_raw_values(int16_t* raw_humidity,
                                        uint16_t* raw_nox_ticks);
 
 /**
- * svm41_set_temperature_offset_for_rht_measurements() - Sets the T-Offset for
- * the temperature compensation of the RHT algorithm.
+ * svm41_set_temperature_offset_for_rht_measurements_ticks() - Sets the T-Offset
+ * for the temperature compensation of the RHT algorithm.
  *
  * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t svm41_set_temperature_offset_for_rht_measurements(int16_t t_offset);
+int16_t
+svm41_set_temperature_offset_for_rht_measurements_ticks(int16_t t_offset);
+
+/**
+ * svm41_set_temperature_offset_for_rht_measurements() - Sets the T-Offset for
+ * the temperature compensation of the RHT algorithm.
+ *
+ * @param t_offset Temperature offset in degrees celsius.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t svm41_set_temperature_offset_for_rht_measurements(float t_offset);
+
+/**
+ * svm41_get_temperature_offset_for_rht_measurements_ticks() - Gets the T-Offset
+ * for the temperature compensation of the RHT algorithm.
+ *
+ * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t
+svm41_get_temperature_offset_for_rht_measurements_ticks(int16_t* t_offset);
 
 /**
  * svm41_get_temperature_offset_for_rht_measurements() - Gets the T-Offset for
  * the temperature compensation of the RHT algorithm.
  *
- * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
+ * @param t_offset Temperature offset in degrees celsius.
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t svm41_get_temperature_offset_for_rht_measurements(int16_t* t_offset);
+int16_t svm41_get_temperature_offset_for_rht_measurements(float* t_offset);
 
 /**
  * svm41_set_voc_algorithm_tuning_parameters() - Sets the parameters to
