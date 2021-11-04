@@ -22,8 +22,7 @@ SEL    |        Pin 9 (GND for I2C)     |   Blue            |
 
 <center><img src="images/GPIO-Pinout-Diagram.png" width="900px"></center>
 
-If you don't have a suitable cable at hand, please find the SEK-SVM41 pinout listed below, or in
-the [technical documentation](https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/9_Gas_Sensors/Sensirion_Gas_Sensors_SEK-SVM41_Technical_Description_D1.pdf):
+If you don't have a suitable cable at hand, please find the SEK-SVM4x technical description [here](https://www.sensirion.com/my-sgp-ek):
 
 | *Pin* | *Cable Color* | *Name* | *Description* | *Comments* |
 |-------|---------------|--------|---------------|------------|
