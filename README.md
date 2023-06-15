@@ -1,7 +1,9 @@
-# Sensirion Raspberry Pi I2C SVM41 Driver
+# Sensirion Raspberry Pi I2C SVM4x Driver
 
-This document explains how to set up the [SEK-SVM41](https://www.sensirion.com/my-sgp-ek/) sensor module to run on a
+This document explains how to set up the [SEK-SVM4x](https://www.sensirion.com/my-sgp-ek/) sensor module to run on a
 Raspberry Pi using the provided code.
+
+The SVM4x evaluation kit covers evaluation of the SGP40 and SGP41 sensors.
 
 [<center><img src="images/SVM4x.png" width="500px"></center>](https://www.sensirion.com/my-sgp-ek/)
 
@@ -10,9 +12,9 @@ Raspberry Pi using the provided code.
 ### Connecting the Sensor
 
 Your sensor has the five different connectors: VCC, GND, SDA, SCL, SEL (the sixth connector will not be used for now).
-Use the following pins to connect your SVM41:
+Use the following pins to connect your SVM4x:
 
-*SVM41*  |    *Raspberry Pi*            |   *Jumper Wire*   |
+*SVM4x*  |    *Raspberry Pi*            |   *Jumper Wire*   |
  :------: | :-------------------------: | :---------------: |
 VCC    |        Pin 1 or 2 (3.3V or 5V) |   Red             |
 GND    |        Pin 6                   |   Black           |
@@ -40,11 +42,11 @@ If you don't have a suitable cable at hand, please find the SEK-SVM4x technical 
 
 - [Install the Raspberry Pi OS on to your Raspberry Pi](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up)
 - [Enable the I2C interface in the raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md)
-- Download the driver for the [Sensirion Github Page](https://github.com/Sensirion/raspberry-pi-i2c-SVM41) and extract
+- Download the driver for the [Sensirion Github Page](https://github.com/Sensirion/raspberry-pi-i2c-svm4x) and extract
   the `.zip` on your Raspberry Pi
 - Compile the driver
     1. Open a [terminal](https://www.raspberrypi.org/documentation/usage/terminal/?)
-    2. Navigate to the driver directory. E.g. `cd ~/raspberry-pi-i2c-svm41`
+    2. Navigate to the driver directory. E.g. `cd ~/raspberry-pi-i2c-svm4x`
     3. Run the `make` command to compile the driver
 
        Output:
